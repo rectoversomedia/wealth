@@ -112,7 +112,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form action="/api/auth/login" method="POST" className="space-y-5" id="login-form">
             <div>
               <label className="block text-sm font-semibold text-[var(--slate-700)] mb-1.5">
                 Email address
@@ -152,31 +152,37 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {error && (
-              <div className="p-3 bg-[var(--danger-bg)] border border-[var(--danger)]/20 rounded-lg">
-                <p className="text-xs text-[var(--danger)]">{error}</p>
-              </div>
-            )}
+            <div id="login-error" style={{ display: 'none' }} className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-xs text-red-600">Login failed. Please check your credentials.</p>
+            </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className={cn(
-                'w-full py-3 bg-[var(--slate-900)] text-white font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2',
-                loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[var(--slate-800)] shadow-sm hover:shadow-md'
-              )}
+              className="w-full py-3 bg-[var(--slate-900)] text-white font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 hover:bg-[var(--slate-800)] shadow-sm hover:shadow-md"
+              onClick={() => {
+                const form = document.getElementById('login-form');
+                if (form) {
+                  const fd = new FormData(form);
+                  const email = fd.get('email') as string;
+                  const password = fd.get('password') as string;
+                  fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                    credentials: 'include',
+                  }).then(r => r.json()).then(d => {
+                    if (d.success) window.location.href = '/dashboard';
+                    else { document.getElementById('login-error')!.textContent = d.error || 'Login failed'; document.getElementById('login-error')!.style.display = 'block'; }
+                  }).catch(() => {
+                    document.getElementById('login-error')!.textContent = 'Connection error';
+                    document.getElementById('login-error')!.style.display = 'block';
+                  });
+                }
+                return false;
+              }}
             >
-              {loading ? (
-                <>
-                  <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                  Signing in…
-                </>
-              ) : (
-                <>
-                  Sign In
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
+              Sign In
+              <ArrowRight className="w-4 h-4" />
             </button>
 
             <div className="text-center p-3 bg-[var(--gold-50)] border border-[var(--gold-200)] rounded-xl">
