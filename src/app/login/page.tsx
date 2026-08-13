@@ -27,7 +27,9 @@ export default function LoginPage() {
         credentials: 'include',
       });
 
+      console.log('API status:', res.status);
       const data = await res.json();
+      console.log('API response:', JSON.stringify(data));
 
       if (!res.ok) {
         setError(data.error ?? 'Login failed. Please try again.');
@@ -35,7 +37,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.push('/dashboard');
+      window.location.href = '/dashboard';
     } catch {
       setError('Unable to connect. Please check your connection and try again.');
       setLoading(false);
