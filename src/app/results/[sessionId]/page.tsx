@@ -280,8 +280,8 @@ export default function ResultsPage({ params }: { params: Promise<{ sessionId: s
   const { wealthScore, opportunityScore, aiReport } = data;
   const rawName = data.firstName || aiReport?.executiveSummary?.split(' ')[1]?.replace(/,/g, '') || 'there';
   const allDims = wealthScore.dimensions;
-  const topDim = [].concat(allDims).sort(function(a, b) { return b.percentage - a.percentage; })[0];
-  const weakDim = [].concat(allDims).sort(function(a, b) { return a.percentage - b.percentage; })[0];
+  const topDim = allDims.slice().sort(function(a, b) { return b.percentage - a.percentage; })[0];
+  const weakDim = allDims.slice().sort(function(a, b) { return a.percentage - b.percentage; })[0];
 
   // ── Build Deep Recommendations ──────────────────────────────────────────────
   var recs: DeepRecCard[] = [];
