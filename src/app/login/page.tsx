@@ -160,7 +160,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full py-3 bg-[var(--slate-900)] text-white font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 hover:bg-[var(--slate-800)] shadow-sm hover:shadow-md"
               onClick={() => {
-                const form = document.getElementById('login-form');
+                const form = document.getElementById('login-form') as HTMLFormElement;
                 if (form) {
                   const fd = new FormData(form);
                   const email = fd.get('email') as string;
